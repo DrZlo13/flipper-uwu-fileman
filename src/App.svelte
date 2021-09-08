@@ -1,30 +1,47 @@
 <script>
-	export let name;
+  import FileTerminal from "./FileTerminal.svelte";
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+  <FileTerminal />
 </main>
 
 <style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
+  @font-face {
+    font-family: "DOS";
+    src: url("../assets/fonts/Px437_IBM_EGA8.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+    -webkit-font-kerning: none;
+    font-kerning: none;
+    font-synthesis: none;
+    -webkit-font-variant-ligatures: none;
+    font-variant-ligatures: none;
+    font-variant-numeric: tabular-nums;
+  }
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
+  * {
+    -moz-user-select: none;
+    -o-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+  :global(body) {
+    padding: 0;
+    margin: 0;
+    background-color: #000084;
+    color: white;
+    font-size: 28px;
+    font-family: "DOS", monospace;
+    line-height: 1;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
+  main {
+    height: 100%;
+  }
 </style>
