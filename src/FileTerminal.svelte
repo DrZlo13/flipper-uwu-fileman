@@ -28,7 +28,7 @@
     path = "/";
 
     serial.send("device_info\r").then(() => {
-      serial.read_until("hardware_model      :").then(() => {
+      serial.read_until("hardware_model").then(() => {
         serial.read_until(CLI_PROMPT).then(() => {
           get_filelist();
           connected = true;
