@@ -21,8 +21,11 @@
   const mode_enum = Object.freeze({ load: 1, view: 2, delete: 3 });
   let mode = mode_enum.load;
 
+  let progress = -1;
+
   const CLI_PROMPT = ">: ";
   const CLI_EOL = "\r\n";
+
   function connect_callback() {
     connected = true;
     path = "/";
@@ -155,6 +158,8 @@
     let filepath = path + "/" + name;
     const buffer_size = 512;
 
+    progress = 0;
+
     await serial.send(
       'storage read_chunks "' + filepath + '" ' + buffer_size + "\r"
     );
@@ -175,9 +180,8 @@
           for (let i = 0; i < buffer.length; i++, readed_size++) {
             file_data[readed_size] = buffer[i];
           }
-
-          console.log("Received ", readed_size, buffer, " from ", filepath);
         });
+        progress = Math.floor((readed_size / size) * 100);
       }
 
       if (mode == mode_enum.load) {
@@ -190,7 +194,8 @@
       }
 
       await serial.read_until(CLI_PROMPT);
-      console.log("Readed");
+      get_filelist();
+      progress = -1;
     });
   }
 
@@ -217,6 +222,7 @@
     reader.onload = async () => {
       let data = new Uint8Array(reader.result);
       console.log(name, size, data);
+      progress = 0;
 
       await serial.send('storage remove "' + path + "/" + name + '"\r');
       await serial.read_until(CLI_EOL);
@@ -240,9 +246,12 @@
         await serial.read_until(CLI_EOL);
         await serial.send_raw(buffer);
         await serial.read_until(CLI_PROMPT);
+
+        progress = Math.floor((sended_size / size) * 100);
       }
 
       get_filelist();
+      progress = -1;
     };
     //}
   }
@@ -294,6 +303,13 @@
               </div>
             {/if}
           {/each}
+        </div>
+        <div class="progress-bar-wrapper">
+          {#if progress > -1}
+            <div class="progress-bar" style="width: {progress}%;">
+              {progress}%
+            </div>
+          {/if}
         </div>
         <div class="command-list">
           <div
@@ -437,8 +453,20 @@
     background-color: black;
   }
 
-  .command-list {
+  .progress-bar {
+    text-align: center;
+    margin: auto;
+    background-color: white;
+    color: black;
+  }
+
+  .progress-bar-wrapper {
     margin-top: auto;
+    margin-bottom: 12px;
+    width: calc(100% - 24px);
+  }
+
+  .command-list {
     margin-bottom: 24px;
     display: flex;
     justify-content: flex-start;
