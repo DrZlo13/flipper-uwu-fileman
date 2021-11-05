@@ -9,6 +9,10 @@
     buffer = buffer + text;
     buffer = buffer.split("\n");
 
+    if (lines.length > 100) {
+      lines.splice(0, lines.length - 100);
+    }
+
     while (buffer.length > 1) {
       let data = buffer.shift();
       data = data.replaceAll("\t", "&nbsp;&nbsp;");
